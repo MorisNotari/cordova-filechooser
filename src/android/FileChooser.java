@@ -27,14 +27,14 @@ import org.json.JSONObject;
 public class FileChooser extends CordovaPlugin {
 
     private static final String TAG = "FileChooser";
-    private static final String ACTION_OPEN = "open";
+    private static final String ACTION_PICK = "pick";
     private static final int PICK_FILE_REQUEST = 1;
     CallbackContext callback;
 
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
 
-        if (action.equals(ACTION_OPEN)) {
+        if (action.equals(ACTION_PICK)) {
             chooseFile(callbackContext);
             return true;
         }
