@@ -1,4 +1,4 @@
-package com.megster.cordova;
+package it.notarimoris.cordova;
 
 import android.app.Activity;
 import android.content.Intent;
