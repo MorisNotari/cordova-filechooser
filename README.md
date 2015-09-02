@@ -3,6 +3,8 @@
 - Made the original plugin compatibile with Android 5.x (Lollipop)
 - Changed the API name from "open" to "pick"
 
+TODO: test the plugin on previous versions of Android (3.x up)
+
 ---
 
 Cordova FileChooser Plugin
