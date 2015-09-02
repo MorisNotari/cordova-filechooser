@@ -3,13 +3,26 @@ package com.megster.cordova;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
+import android.util.Base64;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import java.lang.Exception;
 
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
+
 import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class FileChooser extends CordovaPlugin {
 
@@ -58,13 +71,72 @@ public class FileChooser extends CordovaPlugin {
 
                 if (uri != null) {
 
-                    Log.w(TAG, uri.toString());
-                    callback.success(uri.toString());
+                    String mimeType = cordova.getActivity().getContentResolver().getType(uri);
+                    String fileName = "";
+                    String fileExt  = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+                    String base64   = "";
+
+                    // TODO(Moris): check if it's possible to use a separate thread for reading and/or base64-encoding the file to avoid the warning:
+                    //
+                    //              "THREAD WARNING: exec() call to FileChooser.open blocked the main thread for 20ms. Plugin should use CordovaInterface.getThreadPool()."
+                    //
+                    //              See: http://www.donmarges.io/thread-warning-exec-call-blocked-the-main-thread-plugin-should-use-cordovainterface-getthreadpool-cordova-plugin-warning/
+
+                    ParcelFileDescriptor mInputPFD;
+                    try {
+                        mInputPFD = cordova.getActivity().getContentResolver().openFileDescriptor(uri, "r");
+
+                    } catch (FileNotFoundException e) {
+
+                        e.printStackTrace();
+                        Log.e("FileChooser", "File not found.");
+                        callback.error("File not found");
+                        return;
+                    }
+
+                    try {
+                        FileDescriptor fd = mInputPFD.getFileDescriptor();
+                        FileInputStream fis = new FileInputStream(fd);
+
+                        byte[] bytes;
+                        byte[] buffer = new byte[8192];
+                        int bytesRead;
+                        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+                        while ((bytesRead = fis.read(buffer)) > -1) {
+                            output.write(buffer, 0, bytesRead);
+                        }
+
+                        bytes = output.toByteArray();
+                        base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                        Log.e("FileChooser", "File read error.");
+                        callback.error("File read error");
+                    }
+
+                    JSONObject result = new JSONObject();
+                    try {
+                        result.put("uri", uri.toString());
+                        result.put("mime", mimeType);
+                        result.put("ext", fileExt);
+                        result.put("base64", base64);
+
+                    } catch(JSONException e) {
+
+                        e.printStackTrace();
+                        Log.e("FileChooser", "JSON object build error.");
+                        callback.error("JSON object build error");
+                        return;
+                    }
+
+                    callback.success(result);
 
                 } else {
 
                     callback.error("File uri was null");
-
                 }
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
