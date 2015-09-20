@@ -3,7 +3,7 @@
     xmlns="http://www.phonegap.com/ns/plugins/1.0" 
     xmlns:android="http://schemas.android.com/apk/res/android" 
     id="it.notarimoris.cordova.FileChooser"
-    version="0.0.1">
+    version="0.1.0">
     
     <engines>
         <engine name="cordova" version=">=2.8.0" />
@@ -21,7 +21,10 @@
             <feature name="FileChooser">
                 <param name="android-package" value="it.notarimoris.cordova.FileChooser"/>
             </feature> 
-        </config-file> 
+        </config-file>
+		<config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+        </config-file>
                 
         <source-file src="src/android/FileChooser.java" target-dir="src/it/notarimoris/cordova"/>
                         

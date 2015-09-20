@@ -1,9 +1,15 @@
-**WORK IN PROGRESS**
+DISCLAMER:
+
+**THIS IS A WORK IN PROGRESS**
+
+Done:
 
 - Made the original plugin compatibile with Android 5.x (Lollipop)
 - Changed the API name from "open" to "pick"
 
-TODO: test the plugin on previous versions of Android (3.x up)
+ToDo:
+
+- Test the plugin on previous versions of Android (3.x up)
 
 ---
 
@@ -24,7 +30,7 @@ API
 
 	fileChooser.pick(successCallback, failureCallback);
 
-The success callback get a JavaScript object with some informationo and a base64 encoded content of the selected file
+The success callback get a JavaScript object with some information and a base64 encoded content of the selected file
 
 	fileChooser.pick(function(fileData) {
 		console.log('uri: ', fileData.uri);
@@ -32,10 +38,6 @@ The success callback get a JavaScript object with some informationo and a base64
 		console.log('ext: ', fileData.ext);
 		console.log('base64: ', fileData.base64);
 	});
-
-Android permissions
-
-Make shure you have the "MANAGE_DOCUMENTS" permission in your Android manifest file.
 
 Screenshot
 
