@@ -108,7 +108,7 @@ public class FileChooser extends CordovaPlugin {
                         }
 
                         bytes = output.toByteArray();
-                        base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                        base64 = Base64.encodeToString(bytes, Base64.DEFAULT | Base64.NO_WRAP);
 
                     } catch (Exception e) {
 
